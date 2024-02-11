@@ -91,14 +91,6 @@ const draw = (e) => {
     }
 }
 
-imageCanvas.addEventListener("mousedown", startDraw);
-imageCanvas.addEventListener("mousemove", draw);
-imageCanvas.addEventListener("mouseup", () => isDrawing = false);
-
-imageCanvas.addEventListener("touchstart", startDraw);
-imageCanvas.addEventListener("touchmove", draw);
-imageCanvas.addEventListener("touchend", () => isDrawing = false);
-
 imageCanvas.addEventListener("pointerdown", startDraw);
 imageCanvas.addEventListener("pointermove", draw);
 imageCanvas.addEventListener("pointerup", () => isDrawing = false); 
