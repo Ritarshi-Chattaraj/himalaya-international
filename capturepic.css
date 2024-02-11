@@ -57,7 +57,6 @@ video, canvas {
     user-select:none;
     width: 100vw; /* 100% of the viewport width */
     height: 100vh; /* 100% of the viewport height */
-    display: block; /* Ensures canvas behaves as a block element */
 }
 
 button{
