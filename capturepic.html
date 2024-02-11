@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" >
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camera Image Upload</title>
+  <link rel="stylesheet" href="capturepic.css">
+</head>
+<body>
+
+
+    <div class="containerB">
+        <video id="cameraFeed" width="640" height="480"  autoplay playsinline></video>
+        <canvas id="imageCanvas" style="display: none;"></canvas>
+
+            <div class="container">
+                <label for="imageInput">Upload Image</label>
+                <input type="file" accept="image/*" id="imageInput">
+
+                <button id="useCameraButton">Use Camera</button>
+                <button id="captureImageButton">Capture Image</button>
+                <button id="drawButton" onclick="drawRectangle()" style="display: none;">Draw Rectangle</button>
+
+            <input type="text" id="input-field-store-name" placeholder="Store Name">
+            <input type="text" id="input-field-location-name" placeholder="Location">
+            <input type="text" id="input-field-phone_number" placeholder="Phone">
+            <input type="text" id="input-field-length" placeholder="Length">
+            <input type="text" id="input-field-breadth" placeholder="Breadth">
+            <button onclick="saveImage()" style="display: none;" id="save-button">Save Image</button>
+            </div>
+    </div>
+
+    
+
+    <a id="downloadLink" download="presentation.pptx" href="#">Download PowerPoint</a>
+
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js" type="module"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js" type="module"></script>
+  <script src="capturepic.js" type="module"></script>
+</body>
+</html>
