@@ -28,7 +28,7 @@ let snapshot;
 useCameraButton.addEventListener('click', () => {
     imageInput.style.display = 'none';
     cameraFeed.style.display = 'block';
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then((stream) => {
             cameraFeed.srcObject = stream;
             captureImageButton.style.display = 'inline-block';
