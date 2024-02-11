@@ -99,6 +99,10 @@ imageCanvas.addEventListener("touchstart", startDraw);
 imageCanvas.addEventListener("touchmove", draw);
 imageCanvas.addEventListener("touchend", () => isDrawing = false);
 
+imageCanvas.addEventListener("pointerdown", startDraw);
+imageCanvas.addEventListener("pointermove", draw);
+imageCanvas.addEventListener("pointerup", () => isDrawing = false); 
+
 const saveImage = () => {
   push(Imagedb,imageCanvas);
 }
