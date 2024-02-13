@@ -1,12 +1,10 @@
-/* Add your CSS styles here */
-
 body, html {
   margin: 0;
   padding: 0;
   font-family: 'Rubik', sans-serif;
   background-color: #EEF0F4;
   height: 100%;
-  overflow: hidden;
+  overflow: hidden; /* This prevents scrolling */
 }
 
 .containerB {
@@ -35,13 +33,9 @@ video, canvas {
   margin-bottom: 20px;
 }
 
-#downloadLink {
-  display: block;
-  text-align: center;
-  margin-top: 20px;
-}
 
 /* Add more styles as needed */
+
 
 
   
