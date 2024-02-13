@@ -16,7 +16,7 @@ html, body {
     background-color: #DCE1EB;
     border: 0;
     padding: 3vw; /* Adjusted to 3vw */
-    border-radius: 8px;
+    border-radius: 3vw;
     font-size: 3vw; /* Adjusted to 3vw */
     text-align: center;
 }
