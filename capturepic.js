@@ -21,12 +21,24 @@ const ctx = imageCanvas.getContext('2d');
 const uploadImageInput = document.getElementById('upload-image');
 const saveButton = document.getElementById('save-button');
 
+
+
+
 let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 let selectedTool = "rectangle"; // Default tool
 let snapshot;
 let firstTime=1;
+
+let canvasWidth=0;
+let canvasHeight=0;
+let imageWidth=0;
+let imageHeight=0;
+let widthDifference=0;
+let heightDifference=0;
+let scaleX=0;
+let scaleY=0;
 
 /*First Time when the page loads*/
 if(firstTime){
@@ -87,38 +99,49 @@ captureImageButton.addEventListener('click', () => {
 });
 
 window.addEventListener("load", () => {
+    canvasWidth = imageCanvas.width;
+    canvasHeight = imageCanvas.height;
+    console.log('Canvas width:', canvasWidth);
+    console.log('Canvas height:', canvasHeight);
     imageCanvas.width = imageCanvas.offsetWidth;
     imageCanvas.height = imageCanvas.offsetHeight;
 });
 
 const startDraw = (e) => {
     isDrawing = true;
-    [lastX, lastY] = [e.offsetX, e.offsetY];
+    const adjustedX= e.offsetX;
+    const adjustedY= e.offsetY;
+    [lastX, lastY] = [adjustedX, adjustedY];
     snapshot = ctx.getImageData(0,0,imageCanvas.width,imageCanvas.height)
+
+    console.log("Start Draw Coordinates:", lastX, lastY);
 }
 
 const draw = (e) => {
     if (!isDrawing) return;
-    ctx.putImageData(snapshot,0,0);
+
+    ctx.putImageData(snapshot, 0, 0);
     ctx.strokeStyle = "green"; // Setting stroke color
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
     ctx.lineWidth = 5;
 
     // Redraw the image to prevent it from disappearing
     ctx.drawImage(cameraFeed, 0, 0, imageCanvas.width, imageCanvas.height);
 
+    const currentX = e.offsetX;
+    const currentY = e.offsetY;
+    const currentadjustedX= currentX;
+    const currentadjustedY= currentY;
+
+    console.log("Draw Coordinates:", currentadjustedX, currentadjustedY);
+
     if (selectedTool === "line") {
         ctx.beginPath();
         ctx.moveTo(lastX, lastY);
-        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.lineTo(currentadjustedX, currentadjustedY);
         ctx.stroke();
-        [lastX, lastY] = [e.offsetX, e.offsetY];
+        [lastX, lastY] = [currentadjustedX, currentadjustedY];
     } else if (selectedTool === "rectangle") {
-        
-        ctx.drawImage(cameraFeed, 0, 0, imageCanvas.width, imageCanvas.height);
-        ctx.strokeRect(e.offsetX , e.offsetY , lastX-e.offsetX, lastY-e.offsetY);
-        
+        ctx.strokeRect(lastX, lastY, currentadjustedX - lastX, currentadjustedY - lastY);
     }
 };
 
@@ -158,8 +181,40 @@ uploadImageInput.addEventListener('change', (e) => {
         // Set the data URL as the source of the canvas image
         const image = new Image();
         image.onload = () => {
+
+            image.width = canvasWidth;
+            image.height = canvasHeight;
+
+            imageWidth = image.width;
+            imageHeight = image.height;
+            widthDifference = canvasWidth - imageWidth;
+            heightDifference = canvasHeight - imageHeight;
+
+            
+            scaleX = canvasWidth/imageWidth;
+            scaleY = canvasHeight/imageHeight;
+            console.log('Width difference:', widthDifference);
+            console.log('Height difference:', heightDifference);
+            console.log('Scale X:', scaleX);
+            console.log('Scale Y:', scaleY);
+
             imageCanvas.width = image.width;
             imageCanvas.height = image.height;
+
+            imageWidth = image.width;
+            imageHeight = image.height;
+            widthDifference = canvasWidth - imageWidth;
+            heightDifference = canvasHeight - imageHeight;
+
+            scaleX = canvasWidth/imageWidth;
+            scaleY = canvasHeight/imageHeight;
+            console.log('Width difference:', widthDifference);
+            console.log('Height difference:', heightDifference);
+            console.log('Scale X:', scaleX);
+            console.log('Scale Y:', scaleY);
+
+
+
             ctx.drawImage(image, 0, 0, imageCanvas.width, imageCanvas.height);
         };
         image.src = imageDataURL;
