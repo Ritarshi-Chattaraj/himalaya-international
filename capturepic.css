@@ -1,8 +1,9 @@
 body, html {
     margin: 0;
-    padding: 0;
+    padding-top: 10vh;
+    padding-bottom: 10vh;
     font-family: 'Rubik', sans-serif;
-    height: 100vh;
+    height: 80vh;
     width:100vw;
     overflow: hidden; /* This prevents scrolling */
   }
