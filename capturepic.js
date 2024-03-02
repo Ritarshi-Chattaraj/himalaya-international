@@ -28,12 +28,11 @@ let selectedTool = "rectangle"; // Default tool
 let snapshot;
 let firstTime=1;
 
-
+/*First Time when the page loads*/
 if(firstTime){
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then((stream) => {
             cameraFeed.srcObject = stream;
-            captureImageButton.style.display = 'inline-block';
             cameraFeed.controls = false;
         })
         .catch((error) => {
@@ -41,40 +40,50 @@ if(firstTime){
         });
 
     firstTime=0;    
+
+    /* Making buttons invisible */
+    captureImageButton.style.display = 'none';
+    drawB.style.display = 'none';
+    saveButton.style.display = 'none';
+    cameraFeed.controls = false;
 }
 
+/* When Camera button is clicked */
 cameraButton.addEventListener('click', () => {
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then((stream) => {
             cameraFeed.srcObject = stream;
-            captureImageButton.style.display = 'inline-block';
-            cameraFeed.controls = false;
         })
         .catch((error) => {
             console.error('Error accessing camera:', error);
         });
 
-
-    cameraFeed.style.display = 'block';
-    imageCanvas.style.display='none';
+        /* Making buttons invisible */
+        captureImageButton.style.display = 'block';
+        uploadImageInput.style.display = 'none';
+        cameraButton.style.display = 'none';
+        cameraFeed.controls = false;
 });
 
-
+/* When Capture Button is clicked */
 captureImageButton.addEventListener('click', () => {
-    cameraFeed.style.display = 'none';
-    captureImageButton.style.display = 'none';
-    drawB.style.display = 'inline-block';
-
+    
+    /* Copyimng image from video feed to canvas */
     imageCanvas.width = cameraFeed.videoWidth;
     imageCanvas.height = cameraFeed.videoHeight;
     ctx.drawImage(cameraFeed, 0, 0, imageCanvas.width, imageCanvas.height);
 
+    /* Stopping video feed */
     const stream = cameraFeed.srcObject;
     const tracks = stream.getTracks();
     tracks.forEach(track => track.stop());
     cameraFeed.srcObject = null;
 
+    /* Making buttons invisible */
     imageCanvas.style.display = 'block';
+    cameraFeed.style.display = 'none';
+    captureImageButton.style.display = 'none';
+    drawB.style.display = 'block';
 });
 
 window.addEventListener("load", () => {
@@ -111,12 +120,13 @@ const draw = (e) => {
         ctx.strokeRect(e.offsetX , e.offsetY , lastX-e.offsetX, lastY-e.offsetY);
         
     }
-}
+};
 
 imageCanvas.addEventListener("pointerdown", startDraw);
 imageCanvas.addEventListener("pointermove", draw);
 imageCanvas.addEventListener("pointerup", () => isDrawing = false); 
 
+/* When save button clicked */
 saveButton.addEventListener('click', () => {
     // Convert the canvas image to a data URL
     const imageDataURL = imageCanvas.toDataURL();
@@ -135,10 +145,10 @@ saveButton.addEventListener('click', () => {
     });
 });
 
+/* When upload button is pressed */
 uploadImageInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // Get the selected file
     if (!file) return; // If no file is selected, do nothing
-
 
     const reader = new FileReader();
     
@@ -157,6 +167,18 @@ uploadImageInput.addEventListener('change', (e) => {
     
     reader.readAsDataURL(file); // Read the file as a data URL
 
+
+    /* Stopping video feed */
+    const stream = cameraFeed.srcObject;
+    const tracks = stream.getTracks();
+    tracks.forEach(track => track.stop());
+    cameraFeed.srcObject = null;
+
+     /* Making buttons invisible */
+    cameraButton.style.display = 'none';
     cameraFeed.style.display = 'none';
     imageCanvas.style.display='block';
+    uploadImageInput.style.display = 'none';
+    saveButton.style.display = 'block';
 });
+
