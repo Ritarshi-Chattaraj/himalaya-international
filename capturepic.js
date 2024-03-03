@@ -23,6 +23,8 @@ const drawText = document.getElementById('drawText');
 const deleteButton = document.getElementById('deleteButton');
 const uploadImageInput = document.getElementById('upload-image');
 const saveButton = document.getElementById('save-button');
+const zoomButton = document.getElementById('zoom');
+const zoomOutButton = document.getElementById('zoomout');
 const imageCanvas = document.getElementById('imageCanvas');
 const ctx = imageCanvas.getContext('2d');
 
@@ -57,6 +59,8 @@ if(firstTime){
     drawRectangle.style.display = 'none';
     drawText.style.display = 'none';
     deleteButton.style.display = 'none';
+    zoomButton.style.display = 'none';
+    zoomOutButton.style.display = 'none';
     cameraFeed.controls = false;
     
 }
@@ -82,8 +86,7 @@ cameraButton.addEventListener('click', () => {
 captureImageButton.addEventListener('click', () => {
     
     /* Copyimng image from video feed to canvas */
-    imageCanvas.width = cameraFeed.videoWidth;
-    imageCanvas.height = cameraFeed.videoHeight;
+   
     ctx.drawImage(cameraFeed, 0, 0, imageCanvas.width, imageCanvas.height);
 
     /* Stopping video feed */
@@ -100,11 +103,11 @@ captureImageButton.addEventListener('click', () => {
 });
 
 window.addEventListener("load", () => {
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-    imageCanvas.width = screenWidth;
-    imageCanvas.height = screenHeight;
-    canvas.setDimensions({ width: screenWidth, height: screenHeight });
+    const canvasWidth = imageCanvas.offsetWidth;
+    const canvasHeight = imageCanvas.offsetHeight;
+    console.log('Canvas width:', canvasWidth);
+    console.log('Canvas height:', canvasHeight);
+    canvas.setDimensions({ width: canvasWidth, height: canvasHeight });
 });
 
 window.addEventListener('resize', () => {
@@ -112,7 +115,6 @@ window.addEventListener('resize', () => {
     const screenHeight = window.innerHeight;
     imageCanvas.width = screenWidth;
     imageCanvas.height = screenHeight;
-    canvas.setDimensions({ width: screenWidth, height: screenHeight });
 });
 
 
@@ -151,6 +153,7 @@ uploadImageInput.addEventListener('change', (e) => {
         // When the image is loaded
         image.onload = () => {            
             // Set the dimensions of the canvas to match the image
+          
             canvas.setDimensions({ width: image.width, height: image.height });
 
             // Set the uploaded image as the background of the canvas
@@ -173,6 +176,8 @@ uploadImageInput.addEventListener('change', (e) => {
             drawRectangle.style.display = 'block';
             drawText.style.display = 'block';
             deleteButton.style.display = 'block';
+            zoomButton.style.display = 'block';
+            zoomOutButton.style.display = 'block';
 
         };
         
@@ -239,9 +244,31 @@ const delete2 = () => {
     deleteButton.prop('disabled','disabled');
 }
 
+// Zoom in function
+const zoomIn = () => {
+    const zoomFactor = 1.1; // Increase zoom by 10%
+    const zoom = canvas.getZoom() * zoomFactor;
+    canvas.setZoom(zoom);
+};
+
+// Zoom out function
+const zoomOut = () => {
+    const zoomFactor = 0.9; // Decrease zoom by 10%
+    const zoom = canvas.getZoom() * zoomFactor;
+    canvas.setZoom(zoom);
+};
+
+
 drawB.addEventListener('click', draw);
 drawRectangle.addEventListener('click', drawR);
 drawText.addEventListener('click', drawT);
 deleteButton.addEventListener('click', drawDelete);
 deleteButton.addEventListener('selection:created',delete1);
 deleteButton.addEventListener('selection:cleared',delete2);
+
+
+
+
+// Add event listeners for zoom in and zoom out buttons
+zoomButton.addEventListener('click', zoomIn);
+zoomOutButton.addEventListener('click', zoomOut);
