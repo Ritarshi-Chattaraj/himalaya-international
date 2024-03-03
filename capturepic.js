@@ -100,11 +100,11 @@ captureImageButton.addEventListener('click', () => {
 });
 
 window.addEventListener("load", () => {
-    const canvasWidth = imageCanvas.offsetWidth;
-    const canvasHeight = imageCanvas.offsetHeight;
-    console.log('Canvas width:', canvasWidth);
-    console.log('Canvas height:', canvasHeight);
-    canvas.setDimensions({ width: canvasWidth, height: canvasHeight });
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    imageCanvas.width = screenWidth;
+    imageCanvas.height = screenHeight;
+    canvas.setDimensions({ width: screenWidth, height: screenHeight });
 });
 
 window.addEventListener('resize', () => {
@@ -112,6 +112,7 @@ window.addEventListener('resize', () => {
     const screenHeight = window.innerHeight;
     imageCanvas.width = screenWidth;
     imageCanvas.height = screenHeight;
+    canvas.setDimensions({ width: screenWidth, height: screenHeight });
 });
 
 
