@@ -3,7 +3,7 @@ body, html {
     font-family: 'Rubik', sans-serif;
     height:100vh;
     width:100vw;
-    
+    overflow: hidden; /* This prevents scrolling */
   }
 
   
@@ -16,7 +16,7 @@ body, html {
     text-align: center;
     border: none;
     overflow: scroll;
-    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
   }
   
   
@@ -138,6 +138,22 @@ body, html {
     margin: 1%;
   }
 
-  
+  #zoom{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-image: url("assets/zoom.png");
+    background-size: contain;
+    margin: 1%;
+  }
+
+  #zoomout{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-image: url("assets/zoom_out.png");
+    background-size: contain;
+    margin: 1%;
+  }
   /* Add more styles as needed */
   
