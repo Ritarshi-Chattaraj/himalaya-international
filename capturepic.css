@@ -6,30 +6,6 @@ body, html {
     
   }
 
-
-
-::scrollbar {
-    -webkit-appearance: visible;
-}
-
-::scrollbar:vertical {
-    width: 12px;
-}
-
-::scrollbar:horizontal {
-    height: 12px;
-}
-
-::scrollbar-thumb {
-    background-color: rgba(0, 0, 0, .5);
-    border-radius: 10px;
-    border: 2px solid #ffffff;
-}
-
-::scrollbar-track {
-    border-radius: 10px;
-    background-color: #ffffff;
-}
   
   .containerA {
     user-select: none;
