@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
 import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
 
+
 const appSettings = {
     databaseURL: "https://playground-75133-default-rtdb.asia-southeast1.firebasedatabase.app/"
 }
@@ -11,34 +12,30 @@ const Imagedb = ref(database,"Image")
 
 const imageInput = document.getElementById('imageInput');
 const drawB = document.getElementById('drawButton');
-const imageCanvas = document.getElementById('imageCanvas');
+
 const imageDescription = document.getElementById('imageDescription');
 const downloadLink = document.getElementById('downloadLink');
 const cameraButton = document.getElementById('cameraButton');
 const captureImageButton = document.getElementById('captureImageButton');
 const cameraFeed = document.getElementById('cameraFeed');
-const ctx = imageCanvas.getContext('2d');
+const drawRectangle = document.getElementById('drawRectangle');
+const drawText = document.getElementById('drawText');
+const deleteButton = document.getElementById('deleteButton');
 const uploadImageInput = document.getElementById('upload-image');
 const saveButton = document.getElementById('save-button');
+const imageCanvas = document.getElementById('imageCanvas');
+const ctx = imageCanvas.getContext('2d');
+
+const canvas = new fabric.Canvas('imageCanvas', {
+    width: imageCanvas.offsetWidth,
+    height: imageCanvas.offsetHeight,
+    isDrawingMode: false // Assuming you want drawing mode disabled initially
+});
 
 
 
 
-let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
-let selectedTool = "rectangle"; // Default tool
-let snapshot;
 let firstTime=1;
-
-let canvasWidth=0;
-let canvasHeight=0;
-let imageWidth=0;
-let imageHeight=0;
-let widthDifference=0;
-let heightDifference=0;
-let scaleX=0;
-let scaleY=0;
 
 /*First Time when the page loads*/
 if(firstTime){
@@ -57,7 +54,11 @@ if(firstTime){
     captureImageButton.style.display = 'none';
     drawB.style.display = 'none';
     saveButton.style.display = 'none';
+    drawRectangle.style.display = 'none';
+    drawText.style.display = 'none';
+    deleteButton.style.display = 'none';
     cameraFeed.controls = false;
+    
 }
 
 /* When Camera button is clicked */
@@ -99,55 +100,20 @@ captureImageButton.addEventListener('click', () => {
 });
 
 window.addEventListener("load", () => {
-    canvasWidth = imageCanvas.width;
-    canvasHeight = imageCanvas.height;
+    const canvasWidth = imageCanvas.offsetWidth;
+    const canvasHeight = imageCanvas.offsetHeight;
     console.log('Canvas width:', canvasWidth);
     console.log('Canvas height:', canvasHeight);
-    imageCanvas.width = imageCanvas.offsetWidth;
-    imageCanvas.height = imageCanvas.offsetHeight;
+    canvas.setDimensions({ width: canvasWidth, height: canvasHeight });
 });
 
-const startDraw = (e) => {
-    isDrawing = true;
-    const adjustedX= e.offsetX;
-    const adjustedY= e.offsetY;
-    [lastX, lastY] = [adjustedX, adjustedY];
-    snapshot = ctx.getImageData(0,0,imageCanvas.width,imageCanvas.height)
+window.addEventListener('resize', () => {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    imageCanvas.width = screenWidth;
+    imageCanvas.height = screenHeight;
+});
 
-    console.log("Start Draw Coordinates:", lastX, lastY);
-}
-
-const draw = (e) => {
-    if (!isDrawing) return;
-
-    ctx.putImageData(snapshot, 0, 0);
-    ctx.strokeStyle = "green"; // Setting stroke color
-    ctx.lineWidth = 5;
-
-    // Redraw the image to prevent it from disappearing
-    ctx.drawImage(cameraFeed, 0, 0, imageCanvas.width, imageCanvas.height);
-
-    const currentX = e.offsetX;
-    const currentY = e.offsetY;
-    const currentadjustedX= currentX;
-    const currentadjustedY= currentY;
-
-    console.log("Draw Coordinates:", currentadjustedX, currentadjustedY);
-
-    if (selectedTool === "line") {
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(currentadjustedX, currentadjustedY);
-        ctx.stroke();
-        [lastX, lastY] = [currentadjustedX, currentadjustedY];
-    } else if (selectedTool === "rectangle") {
-        ctx.strokeRect(lastX, lastY, currentadjustedX - lastX, currentadjustedY - lastY);
-    }
-};
-
-imageCanvas.addEventListener("pointerdown", startDraw);
-imageCanvas.addEventListener("pointermove", draw);
-imageCanvas.addEventListener("pointerup", () => isDrawing = false); 
 
 /* When save button clicked */
 saveButton.addEventListener('click', () => {
@@ -178,62 +144,103 @@ uploadImageInput.addEventListener('change', (e) => {
     reader.onload = (event) => {
         const imageDataURL = event.target.result; // Get the data URL of the uploaded image
         
-        // Set the data URL as the source of the canvas image
+        // Create a new image element
         const image = new Image();
-        image.onload = () => {
+        
+        // When the image is loaded
+        image.onload = () => {            
+            // Set the dimensions of the canvas to match the image
+            canvas.setDimensions({ width: image.width, height: image.height });
 
-            image.width = canvasWidth;
-            image.height = canvasHeight;
-
-            imageWidth = image.width;
-            imageHeight = image.height;
-            widthDifference = canvasWidth - imageWidth;
-            heightDifference = canvasHeight - imageHeight;
-
+            // Set the uploaded image as the background of the canvas
+            canvas.setBackgroundImage(imageDataURL, canvas.renderAll.bind(canvas));
             
-            scaleX = canvasWidth/imageWidth;
-            scaleY = canvasHeight/imageHeight;
-            console.log('Width difference:', widthDifference);
-            console.log('Height difference:', heightDifference);
-            console.log('Scale X:', scaleX);
-            console.log('Scale Y:', scaleY);
+            // Configure the drawing brush
+            canvas.freeDrawingBrush.width = 10;
+            canvas.freeDrawingBrush.color = 'white';
+            
+            // Disable drawing mode
+            canvas.isDrawingMode = false;
 
-            imageCanvas.width = image.width;
-            imageCanvas.height = image.height;
+            // Hide unnecessary buttons
+            cameraButton.style.display = 'none';
+            cameraFeed.style.display = 'none';
+            imageCanvas.style.display = 'block';
+            uploadImageInput.style.display = 'none';
+            saveButton.style.display = 'none';
+            drawB.style.display = 'block';
+            drawRectangle.style.display = 'block';
+            drawText.style.display = 'block';
+            deleteButton.style.display = 'block';
 
-            imageWidth = image.width;
-            imageHeight = image.height;
-            widthDifference = canvasWidth - imageWidth;
-            heightDifference = canvasHeight - imageHeight;
-
-            scaleX = canvasWidth/imageWidth;
-            scaleY = canvasHeight/imageHeight;
-            console.log('Width difference:', widthDifference);
-            console.log('Height difference:', heightDifference);
-            console.log('Scale X:', scaleX);
-            console.log('Scale Y:', scaleY);
-
-
-
-            ctx.drawImage(image, 0, 0, imageCanvas.width, imageCanvas.height);
         };
+        
+        // Set the image source to the data URL
         image.src = imageDataURL;
     };
     
-    reader.readAsDataURL(file); // Read the file as a data URL
+    // Read the file as a data URL
+    reader.readAsDataURL(file);
 
-
-    /* Stopping video feed */
+    // Stop video feed if active
     const stream = cameraFeed.srcObject;
-    const tracks = stream.getTracks();
-    tracks.forEach(track => track.stop());
-    cameraFeed.srcObject = null;
-
-     /* Making buttons invisible */
-    cameraButton.style.display = 'none';
-    cameraFeed.style.display = 'none';
-    imageCanvas.style.display='block';
-    uploadImageInput.style.display = 'none';
-    saveButton.style.display = 'block';
+    if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+        cameraFeed.srcObject = null;
+    }
 });
 
+const draw = () => {
+    canvas.isDrawingMode = !canvas.isDrawingMode;
+    
+};
+
+const drawR = () => {
+    canvas.isDrawingMode = !canvas.isDrawingMode;
+    const rectangle = new fabric.Rect({
+        left: 40,
+        top: 40,
+        width: 60,
+        height: 60,
+        fill: 'transparent',
+        stroke: 'white',
+        strokeWidth: 7,
+    });
+    canvas.add(rectangle);
+    canvas.isDrawingMode= false;
+};
+
+const drawT = () => {
+    canvas.isDrawingMode = !canvas.isDrawingMode;
+    const text = new fabric.IText('Text', {
+        left: 40,
+        top: 40,
+        objecttype: 'text',
+        fontFamily: 'arial black',
+        fill: 'white',
+    });
+
+    canvas.add(text);
+    canvas.isDrawingMode= false;
+};
+
+const drawDelete = () => {
+    canvas.isDrawingMode = !canvas.isDrawingMode;
+    canvas.remove(canvas.getActiveObject());
+};
+
+const delete1 = () => {
+    deleteButton.prop('disabled','');
+}
+
+const delete2 = () => {
+    deleteButton.prop('disabled','disabled');
+}
+
+drawB.addEventListener('click', draw);
+drawRectangle.addEventListener('click', drawR);
+drawText.addEventListener('click', drawT);
+deleteButton.addEventListener('click', drawDelete);
+deleteButton.addEventListener('selection:created',delete1);
+deleteButton.addEventListener('selection:cleared',delete2);
