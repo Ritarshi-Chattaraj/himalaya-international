@@ -32,7 +32,7 @@ body, html {
 }
   
   .containerA {
-    
+    user-select: none;
     width: 100%;
     height:90%;
     margin: 0;
