@@ -8,25 +8,25 @@ body, html {
 
 
 
-::-webkit-scrollbar {
-    -webkit-appearance: none;
+::scrollbar {
+    -webkit-appearance: visible;
 }
 
-::-webkit-scrollbar:vertical {
+::scrollbar:vertical {
     width: 12px;
 }
 
-::-webkit-scrollbar:horizontal {
+::scrollbar:horizontal {
     height: 12px;
 }
 
-::-webkit-scrollbar-thumb {
+::scrollbar-thumb {
     background-color: rgba(0, 0, 0, .5);
     border-radius: 10px;
     border: 2px solid #ffffff;
 }
 
-::-webkit-scrollbar-track {
+::scrollbar-track {
     border-radius: 10px;
     background-color: #ffffff;
 }
