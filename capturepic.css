@@ -142,7 +142,7 @@ body, html {
     height: 50px;
     width: 50px;
     border-radius: 50%;
-    background-image: url("assets/zoom.png");
+    background-image: url("zoom.png");
     background-size: contain;
     margin: 1%;
   }
@@ -151,7 +151,7 @@ body, html {
     height: 50px;
     width: 50px;
     border-radius: 50%;
-    background-image: url("assets/zoom_out.png");
+    background-image: url("zoom_out.png");
     background-size: contain;
     margin: 1%;
   }
